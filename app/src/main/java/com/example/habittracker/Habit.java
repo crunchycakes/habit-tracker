@@ -21,6 +21,10 @@ public class Habit implements Parcelable {
      * @param length length of time before habit status "resets" in milliseconds
      */
     public Habit(String id, ZonedDateTime start, long length) {
+        name = id;
+        startTime = start;
+        interval = length;
+        lastDone = startTime;
     }
 
     /**
@@ -65,23 +69,44 @@ public class Habit implements Parcelable {
 
     /**
      * set time last "marked done" to before current interval
+     * i.e. the last "marked done" date is turned back by one interval
      * this will result in the list item showing up as undone
      */
     public void unsetDone() {
         lastDone = lastDone.minus(interval, ChronoUnit.MILLIS);
     }
 
+    /**
+     * check whether the habit is considered "done" based on last reset date
+     * @return boolean, whether habit is considered "done" for the interval
+     */
+    public boolean isDone() {
+        // may be too redundant with getResetDate()
+        ZonedDateTime lastReset = startTime
+                .plus(interval * (intervalsSinceStart()), ChronoUnit.MILLIS);
+        return lastDone.isAfter(lastReset);
+    }
+
     public String getName() {return name;}
+
+    /**
+     * helper to determine how many FULL intervals have passed since start date
+     * i.e. the last date when habit reset
+     * @return how many intervals have passed since start date
+     */
+    private long intervalsSinceStart() {
+        long startMillis = startTime.toInstant().toEpochMilli();
+        long millisSinceStart = ZonedDateTime.now().toInstant().toEpochMilli() - startMillis;
+        long intervalsSinceStart = millisSinceStart / interval;
+        return intervalsSinceStart;
+    }
 
     /**
      * get next reset date of this habit
      * @return next reset date in form ZonedDateTime
      */
     public ZonedDateTime getResetDate() {
-        // first, find number of intervals to get to next reset
-        long startMillis = startTime.toInstant().toEpochMilli();
-        long millisSinceStart = ZonedDateTime.now().toInstant().toEpochMilli() - startMillis;
-        long intervalsSinceStart = millisSinceStart / interval;
+        long intervalsSinceStart = intervalsSinceStart();
         // now current "interval count" is known; can find next reset date by adding one interval
         return startTime.plus(interval * (intervalsSinceStart + 1), ChronoUnit.MILLIS);
     }

@@ -17,7 +17,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
     private ArrayList<Habit> data;
 
     /**
-     * custom viewholder, reference the views of view_habit
+     * custom viewholder class, reference the views of view_habit
      */
     public static class ViewHolder extends RecyclerView.ViewHolder{
         private TextView nameView;
@@ -55,15 +55,21 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.getNameView().setText(data.get(position).getName());
+        Habit habit = data.get(position);
+        holder.getNameView().setText(habit.getName());
 
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("MMMM dd, yyyy - h:mm:ss aa");
-        holder.getResetView().setText(data.get(position).getResetDate().format(format));
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("MMMM dd, yyyy - h:mm:ss a");
+        holder.getResetView().setText(habit.getResetDate().format(format));
+
+        if (habit.isDone()) {
+            holder.getDoneButton().setText("MARK UNDONE");
+            // todo: localization
+        }
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return data.size();
     }
 
 
