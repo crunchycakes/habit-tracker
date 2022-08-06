@@ -34,7 +34,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
 
         public TextView getNameView() {return nameView;}
         public TextView getResetView() {return resetView;}
-        public TextView getDoneButton() {return doneButton;}
+        public Button getDoneButton() {return doneButton;}
     }
 
     /**
@@ -61,17 +61,49 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
         DateTimeFormatter format = DateTimeFormatter.ofPattern("MMMM dd, yyyy - h:mm:ss a");
         holder.getResetView().setText(habit.getResetDate().format(format));
 
+        Button button = holder.getDoneButton();
+
+        // todo: consolidate color logic while still being accessible outside
         if (habit.isDone()) {
-            holder.getDoneButton().setText("MARK UNDONE");
+            button.setText("MARK UNDONE");
+            button.setBackgroundColor(button.getContext().getResources()
+                    .getColor(android.R.color.system_accent1_100));
             // todo: localization
+        } else {
+            button.setBackgroundColor(button.getContext().getResources()
+                    .getColor(android.R.color.system_accent1_500));
         }
+
+        // should probably follow this instead: https://stackoverflow.com/a/28304517
+        // todo: detect doneness without using button text
+        holder.getDoneButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (button.getText().equals("MARK DONE")) {
+                    habit.setDone();
+                    button.setText("MARK UNDONE");
+                    button.setBackgroundColor(button.getContext().getResources()
+                            .getColor(android.R.color.system_accent1_100));
+                } else {
+                    habit.unsetDone();
+                    button.setText("MARK DONE");
+                    button.setBackgroundColor(button.getContext().getResources()
+                            .getColor(android.R.color.system_accent1_500));
+                }
+            }
+        });
+    }
+
+    /**
+     * update all habits and visible elements with current time
+     */
+    public void update() {
+        // todo: realtime update of habit state when app is open
     }
 
     @Override
     public int getItemCount() {
         return data.size();
     }
-
-
 
 }

@@ -24,13 +24,6 @@ public class MainActivity extends AppCompatActivity {
     protected RecyclerView.LayoutManager layoutManager;
     protected ArrayList<Habit> data;
 
-    /**
-     * update all habits with current time
-     */
-    public static void update() {
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +33,9 @@ public class MainActivity extends AppCompatActivity {
 
         // todo: fetch data
         data = new ArrayList<Habit>();
-        data.add(new Habit("test habit", ZonedDateTime.now(), (long) 86400000)); // 24 hours
+        Habit tempHabit = new Habit("test habit", ZonedDateTime.now(), (long) 60000); // 1 minute
+        tempHabit.setDone();
+        data.add(tempHabit);
 
         recyclerView = findViewById(R.id.main_recyclerview_habitlist);
         layoutManager = new LinearLayoutManager(this);
