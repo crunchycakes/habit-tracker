@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected ArrayList<Habit> data;
 
     private Handler handler;
-    private int delay = 5000; // 5 second delay, see if this is too often/not often enough
+    private final int delay = 5000; // 5 second delay, see if this is too often/not often enough
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

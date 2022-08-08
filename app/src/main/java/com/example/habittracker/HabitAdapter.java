@@ -63,16 +63,10 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
 
         Button button = holder.getDoneButton();
 
-        // todo: consolidate doneness logic (color, button text, habit.lastDone)
         if (habit.isDone()) {
-            button.setText("MARK UNDONE");
-            button.setBackgroundColor(button.getContext().getResources()
-                    .getColor(android.R.color.system_accent1_100));
-            // todo: localization
+            updateDoneButton(habit, button, true);
         } else {
-            button.setText("MARK DONE");
-            button.setBackgroundColor(button.getContext().getResources()
-                    .getColor(android.R.color.system_accent1_500));
+            updateDoneButton(habit, button, false);
         }
 
         // should probably follow this instead: https://stackoverflow.com/a/28304517
@@ -81,14 +75,10 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
             public void onClick(View view) {
                 if (!habit.isDone()) {
                     habit.setDone();
-                    button.setText("MARK UNDONE");
-                    button.setBackgroundColor(button.getContext().getResources()
-                            .getColor(android.R.color.system_accent1_100));
+                    updateDoneButton(habit, button, true);
                 } else {
                     habit.unsetDone();
-                    button.setText("MARK DONE");
-                    button.setBackgroundColor(button.getContext().getResources()
-                            .getColor(android.R.color.system_accent1_500));
+                    updateDoneButton(habit, button, false);
                 }
             }
         });
@@ -100,9 +90,29 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
      * @param end last position to update, inclusive
      */
     public void update(int start, int end) {
-        // todo: realtime update of habit state when app is open
         int count = end - start + 1;
         notifyItemRangeChanged(start, count);
+    }
+
+    /**
+     * set what state the done button appears as
+     * @param habit what habit's state to get
+     * @param button which button to modify
+     * @param isDone what state to set the done button
+     */
+    private void updateDoneButton(Habit habit, Button button, boolean isDone) {
+        int color;
+        String text; // todo: use id instead of hardcoded text
+        if (isDone) {
+            color = android.R.color.system_accent1_100;
+            text = "MARK UNDONE";
+        } else {
+            color = android.R.color.system_accent1_500;
+            text = "MARK DONE";
+        }
+        button.setText(text);
+        button.setBackgroundColor(button.getContext().getResources()
+                .getColor(color));
     }
 
     @Override
