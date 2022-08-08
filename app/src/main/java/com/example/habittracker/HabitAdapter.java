@@ -70,6 +70,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
                     .getColor(android.R.color.system_accent1_100));
             // todo: localization
         } else {
+            button.setText("MARK DONE");
             button.setBackgroundColor(button.getContext().getResources()
                     .getColor(android.R.color.system_accent1_500));
         }
@@ -94,16 +95,28 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
     }
 
     /**
-     * update all habits and visible elements with current time
+     * update visible habits
+     * @param start first position to update, inclusive
+     * @param end last position to update, inclusive
      */
-    public void update() {
+    public void update(int start, int end) {
         // todo: realtime update of habit state when app is open
-
+        int count = end - start + 1;
+        notifyItemRangeChanged(start, count);
     }
 
     @Override
     public int getItemCount() {
         return data.size();
     }
+
+    /*
+    // also from https://stackoverflow.com/a/32488059
+    @Override
+    public long getItemId(int position) {
+
+        return 0;
+    }
+     */
 
 }

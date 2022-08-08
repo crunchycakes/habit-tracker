@@ -6,9 +6,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -22,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected RecyclerView recyclerView;
     protected HabitAdapter habitAdapter;
-    protected RecyclerView.LayoutManager layoutManager;
+    protected LinearLayoutManager layoutManager;
     protected ArrayList<Habit> data;
 
     private Handler handler;
@@ -46,15 +43,22 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         habitAdapter = new HabitAdapter(data);
+        /*
+        // from https://stackoverflow.com/a/32488059
+        // look also at HabitAdapter, where some unique stable habit id needs to exist
+        // without this, listview blinks every [delay] seconds; may also be performance issue
+        habitAdapter.setHasStableIds(true);
+         */
         recyclerView.setAdapter(habitAdapter);
 
-        // find visible items: https://stackoverflow.com/a/48688260
         // below updates habits every [delay] seconds
         handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
+                habitAdapter.update(layoutManager.findFirstVisibleItemPosition(),
+                        layoutManager.findLastVisibleItemPosition());
+                handler.postDelayed(this, delay);
             }
         }, delay);
     }
