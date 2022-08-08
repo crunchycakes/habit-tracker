@@ -63,7 +63,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
 
         Button button = holder.getDoneButton();
 
-        // todo: consolidate color logic while still being accessible outside
+        // todo: consolidate doneness logic (color, button text, habit.lastDone)
         if (habit.isDone()) {
             button.setText("MARK UNDONE");
             button.setBackgroundColor(button.getContext().getResources()
@@ -75,11 +75,10 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
         }
 
         // should probably follow this instead: https://stackoverflow.com/a/28304517
-        // todo: detect doneness without using button text
         holder.getDoneButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (button.getText().equals("MARK DONE")) {
+                if (!habit.isDone()) {
                     habit.setDone();
                     button.setText("MARK UNDONE");
                     button.setBackgroundColor(button.getContext().getResources()
@@ -99,6 +98,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
      */
     public void update() {
         // todo: realtime update of habit state when app is open
+
     }
 
     @Override

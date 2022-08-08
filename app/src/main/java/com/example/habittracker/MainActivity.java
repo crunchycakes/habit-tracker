@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
     protected HabitAdapter habitAdapter;
     protected RecyclerView.LayoutManager layoutManager;
     protected ArrayList<Habit> data;
+
+    private Handler handler;
+    private int delay = 5000; // 5 second delay, see if this is too often/not often enough
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,16 @@ public class MainActivity extends AppCompatActivity {
 
         habitAdapter = new HabitAdapter(data);
         recyclerView.setAdapter(habitAdapter);
+
+        // find visible items: https://stackoverflow.com/a/48688260
+        // below updates habits every [delay] seconds
+        handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }, delay);
     }
 
     // todo: onCreateOptionsMenu along with other menu stuff

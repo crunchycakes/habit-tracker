@@ -97,8 +97,7 @@ public class Habit implements Parcelable {
     private long intervalsSinceStart() {
         long startMillis = startTime.toInstant().toEpochMilli();
         long millisSinceStart = ZonedDateTime.now().toInstant().toEpochMilli() - startMillis;
-        long intervalsSinceStart = millisSinceStart / interval;
-        return intervalsSinceStart;
+        return millisSinceStart / interval;
     }
 
     /**
