@@ -6,7 +6,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -16,6 +22,7 @@ import java.util.TimeZone;
 public class MainActivity extends AppCompatActivity {
 
     public static ZoneId ZONE;
+    public static String HABITDIR = "habit.txt";
 
     protected RecyclerView recyclerView;
     protected HabitAdapter habitAdapter;
@@ -34,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         // todo: fetch data
         data = new ArrayList<Habit>();
-        Habit tempHabit = new Habit("test habit", ZonedDateTime.now(), (long) 60000); // 1 minute
+        Habit tempHabit = new Habit("test habit", ZonedDateTime.now().toInstant().toEpochMilli(), (long) 60000); // 1 minute
         tempHabit.setDone();
         data.add(tempHabit);
 
@@ -61,6 +68,34 @@ public class MainActivity extends AppCompatActivity {
                 handler.postDelayed(this, delay);
             }
         }, delay);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    private void saveData(ArrayList<Habit> data) {
+        try {
+            OutputStreamWriter outputStreamWriter
+                    = new OutputStreamWriter(openFileOutput(HABITDIR, this.MODE_PRIVATE));
+            // todo: write habits into txt file
+        } catch (IOException e) {
+            Log.e("write IOException", "Failed to write habits: ", e);
+        }
+    }
+
+    private void initData(ArrayList<Habit> data) {
+        try {
+            InputStream inputStream = openFileInput("HABITDIR");
+            if (inputStream != null) {
+                // todo: read txt file into habits
+            }
+        } catch (FileNotFoundException e) {
+            Log.e("read FileNotFoundException", "File not found: ", e);
+        } catch (IOException e) {
+            Log.e("read IOException", "File not readable: ", e);
+        }
     }
 
     // todo: onCreateOptionsMenu along with other menu stuff

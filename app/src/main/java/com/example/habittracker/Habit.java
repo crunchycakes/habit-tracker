@@ -17,12 +17,12 @@ public class Habit implements Parcelable {
     /**
      * construct a Habit by providing attributes
      * @param id the name of the habit
-     * @param start what datetime the habit interval starts tracking at
+     * @param start what datetime the habit interval starts tracking at in milliseconds
      * @param length length of time before habit status "resets" in milliseconds
      */
-    public Habit(String id, ZonedDateTime start, long length) {
+    public Habit(String id, long start, long length) {
         name = id;
-        startTime = start;
+        startTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(start), MainActivity.ZONE);
         interval = length;
         lastDone = startTime;
     }
@@ -87,7 +87,20 @@ public class Habit implements Parcelable {
         return lastDone.isAfter(lastReset);
     }
 
+    /**
+     * get next reset date of this habit
+     * @return next reset date in form ZonedDateTime
+     */
+    public ZonedDateTime getResetDate() {
+        long intervalsSinceStart = intervalsSinceStart();
+        // now current "interval count" is known; can find next reset date by adding one interval
+        return startTime.plus(interval * (intervalsSinceStart + 1), ChronoUnit.MILLIS);
+    }
+
     public String getName() {return name;}
+    public long getStartTimeMillis() {return startTime.toInstant().toEpochMilli();}
+    public long getLastDoneMillis() {return lastDone.toInstant().toEpochMilli();}
+    public long getInterval() {return interval;}
 
     /**
      * helper to determine how many FULL intervals have passed since start date
@@ -98,16 +111,6 @@ public class Habit implements Parcelable {
         long startMillis = startTime.toInstant().toEpochMilli();
         long millisSinceStart = ZonedDateTime.now().toInstant().toEpochMilli() - startMillis;
         return millisSinceStart / interval;
-    }
-
-    /**
-     * get next reset date of this habit
-     * @return next reset date in form ZonedDateTime
-     */
-    public ZonedDateTime getResetDate() {
-        long intervalsSinceStart = intervalsSinceStart();
-        // now current "interval count" is known; can find next reset date by adding one interval
-        return startTime.plus(interval * (intervalsSinceStart + 1), ChronoUnit.MILLIS);
     }
 
     /**
