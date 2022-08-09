@@ -16,15 +16,31 @@ public class Habit implements Parcelable {
 
     /**
      * construct a Habit by providing attributes
+     * this constructor used to make new habit
      * @param id the name of the habit
-     * @param start what datetime the habit interval starts tracking at in milliseconds
-     * @param length length of time before habit status "resets" in milliseconds
+     * @param start what datetime the habit interval starts tracking at in milliseconds since epoch
+     * @param length length of time before habit status "resets" in milliseconds since epoch
      */
     public Habit(String id, long start, long length) {
         name = id;
         startTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(start), MainActivity.ZONE);
         interval = length;
         lastDone = startTime;
+    }
+
+    /**
+     * construct a habit more completely, also including last done time
+     * this constructor used to restore habit from storage
+     * @param id name of the habit
+     * @param start what datetime the habit interval first starts tracking in milliseconds since epoch
+     * @param last last datetime the habit was "done" in milliseconds since epoch
+     * @param length length of time before habit status "resets" in milliseconds since epoch
+     */
+    public Habit(String id, long start, long last, long length) {
+        name = id;
+        startTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(start), MainActivity.ZONE);
+        interval = length;
+        lastDone = ZonedDateTime.ofInstant(Instant.ofEpochMilli(last), MainActivity.ZONE);
     }
 
     /**
