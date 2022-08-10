@@ -37,6 +37,6 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:hint="Name:"
-        android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
+        android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ'1234567890"/>
 
 </LinearLayout>
