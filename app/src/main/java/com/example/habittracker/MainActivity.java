@@ -1,6 +1,8 @@
 package com.example.habittracker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -75,6 +77,27 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
                 handler.postDelayed(this, delay);
             }
         }, delay);
+
+        // below is swipe to delete logic
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(
+                0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.DOWN | ItemTouchHelper.UP) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                data.remove(position);
+                habitAdapter.notifyItemRemoved(position);
+                saveData(data);
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
     }
 
     @Override
@@ -173,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
     public void onFragmentFinish(Habit newHabit) {
         data.add(newHabit);
         habitAdapter.notifyItemInserted(data.size() - 1);
+        saveData(data);
     }
 
 }
