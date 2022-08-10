@@ -25,7 +25,7 @@ public class Habit implements Parcelable {
         name = id;
         startTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(start), MainActivity.ZONE);
         interval = length;
-        lastDone = startTime;
+        lastDone = startTime.minusSeconds(1);
     }
 
     /**

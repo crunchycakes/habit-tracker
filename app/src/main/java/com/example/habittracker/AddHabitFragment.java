@@ -72,8 +72,8 @@ public class AddHabitFragment extends DialogFragment {
                         int day = datePicker.getDayOfMonth();
                         int month = datePicker.getMonth();
                         int year = datePicker.getYear();
-                        ZonedDateTime dateTime = ZonedDateTime.of(year, month, day,
-                                0, 0, 0, 0, MainActivity.ZONE);
+                        ZonedDateTime dateTime = ZonedDateTime.of(year, month + 1, day,
+                                0, 0, 1, 0, MainActivity.ZONE);
                         long dateTimeMillis = dateTime.toInstant().toEpochMilli();
 
                         // todo: this REALLY shouldn't be hardcoded; put ints in resources or smth

@@ -116,7 +116,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
         int color;
         String text; // todo: use id instead of hardcoded text
         if (isDone) {
-            color = android.R.color.system_accent1_100;
+            color = android.R.color.system_accent1_200;
             text = "MARK UNDONE";
         } else {
             color = android.R.color.system_accent1_500;
