@@ -62,6 +62,12 @@ public class AddHabitFragment extends DialogFragment {
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+
+                        if (editName.getText().toString().trim().length() <= 0
+                            || editTime.getText().toString().trim().length() <= 0) {
+                            return;
+                        }
+
                         int day = datePicker.getDayOfMonth();
                         int month = datePicker.getMonth();
                         int year = datePicker.getYear();
