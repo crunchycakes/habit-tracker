@@ -8,6 +8,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Button;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,7 +28,7 @@ import java.util.ArrayList;
 import java.util.TimeZone;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AddHabitFragment.OnFragmentFinishListener {
 
     public static ZoneId ZONE;
     public static String HABITDIR = "habit.txt";
@@ -83,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         initData(data);
+        // inits ENTIRE data; maybe not performant with lots of habits
         habitAdapter.notifyDataSetChanged();
     }
 
@@ -91,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
         try {
             // redundant, but i need to create the file first
             File file = new File(getFilesDir(), HABITDIR);
-            file.mkdirs();
             FileOutputStream stream = new FileOutputStream(file);
             OutputStreamWriter outputStreamWriter
                     = new OutputStreamWriter(stream);
@@ -100,9 +104,6 @@ public class MainActivity extends AppCompatActivity {
                         habit.getStartTimeMillis() + "/" +
                         habit.getLastDoneMillis() + "/" +
                         habit.getInterval() + "\n";
-
-                // todo: remove this on final product
-                System.out.println(entry);
 
                 outputStreamWriter.write(entry);
             }
@@ -114,8 +115,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void initData(ArrayList<Habit> habits) {
         try {
+            data.clear();
             File file = new File(getFilesDir(), HABITDIR);
-            file.mkdirs();
             FileInputStream fileInputStream = new FileInputStream(file);
             if (fileInputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
@@ -130,11 +131,6 @@ public class MainActivity extends AppCompatActivity {
                      * 3 is interval millis
                      */
                     String[] habitData = line.split("/",0);
-
-                    // todo: remove this on final product
-                    for (int i = 0; i < habitData.length; i++) {
-                        System.out.println(habitData[i]);
-                    }
 
                     if (habitData.length == 4) {
                         Habit habitToAdd = new Habit(habitData[0], Long.parseLong(habitData[1]),
@@ -155,6 +151,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // todo: onCreateOptionsMenu along with other menu stuff
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_main_addhabit:
+                new AddHabitFragment().show(getSupportFragmentManager(), "ADD_HABIT");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onFragmentFinish(Habit newHabit) {
+        data.add(newHabit);
+        habitAdapter.notifyItemInserted(data.size() - 1);
+    }
 
 }
