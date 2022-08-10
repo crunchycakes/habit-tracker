@@ -1,5 +1,6 @@
 package com.example.habittracker;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> {
 
     private ArrayList<Habit> data;
+    private OnHabitClickListener listener;
 
     /**
      * custom viewholder class, reference the views of view_habit
@@ -37,12 +39,21 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
         public Button getDoneButton() {return doneButton;}
     }
 
+    public interface OnHabitClickListener {
+        void onHabitClick();
+    }
+
     /**
      * construct adapter, init arraylist data
      * @param dataset arraylist containing habit list for views
+     * @param context the host activity; to write data on press
      */
-    public HabitAdapter(ArrayList<Habit> dataset) {
+    public HabitAdapter(ArrayList<Habit> dataset, Context context) {
         data = dataset;
+
+        if (context instanceof OnHabitClickListener) {
+            listener = (OnHabitClickListener) context;
+        }
     }
 
     @NonNull
@@ -58,7 +69,8 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
         Habit habit = data.get(position);
         holder.getNameView().setText(habit.getName());
 
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("MMMM dd, yyyy - h:mm:ss a");
+        // below format string may need to be expanded if minute precision implemented
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("MMMM dd, yyyy - h a");
         holder.getResetView().setText(habit.getResetDate().format(format));
 
         Button button = holder.getDoneButton();
@@ -113,6 +125,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
         button.setText(text);
         button.setBackgroundColor(button.getContext().getResources()
                 .getColor(color));
+        listener.onHabitClick();
     }
 
     @Override

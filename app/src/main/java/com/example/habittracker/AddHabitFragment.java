@@ -28,6 +28,7 @@ public class AddHabitFragment extends DialogFragment {
         super(R.layout.fragment_addhabit);
     }
 
+    // make activity accept habit and save
     public interface OnFragmentFinishListener {
         void onFragmentFinish(Habit newHabit);
     }
@@ -57,7 +58,7 @@ public class AddHabitFragment extends DialogFragment {
         spinner.setAdapter(spinnerAdapter);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        return builder.setView(view).setTitle("Add new habit")
+        return builder.setView(view).setTitle("Habit starting date:")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override

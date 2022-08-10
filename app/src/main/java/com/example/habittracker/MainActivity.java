@@ -30,7 +30,8 @@ import java.util.ArrayList;
 import java.util.TimeZone;
 
 
-public class MainActivity extends AppCompatActivity implements AddHabitFragment.OnFragmentFinishListener {
+public class MainActivity extends AppCompatActivity
+        implements AddHabitFragment.OnFragmentFinishListener, HabitAdapter.OnHabitClickListener {
 
     public static ZoneId ZONE;
     public static String HABITDIR = "habit.txt";
@@ -52,13 +53,13 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
 
         // todo: maybe use savedInstanceState for smoothness
         data = new ArrayList<Habit>();
-        initData(data);
+        initData();
 
         recyclerView = findViewById(R.id.main_recyclerview_habitlist);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        habitAdapter = new HabitAdapter(data);
+        habitAdapter = new HabitAdapter(data, this);
         /*
         // from https://stackoverflow.com/a/32488059
         // look also at HabitAdapter, where some unique stable habit id needs to exist
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
                 int position = viewHolder.getAdapterPosition();
                 data.remove(position);
                 habitAdapter.notifyItemRemoved(position);
-                saveData(data);
+                saveData();
             }
         };
 
@@ -103,26 +104,28 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
     @Override
     protected void onPause() {
         super.onPause();
-        saveData(data);
+        saveData();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initData(data);
+        initData();
         // inits ENTIRE data; maybe not performant with lots of habits
         habitAdapter.notifyDataSetChanged();
     }
 
-    // probably doesn't need habits param
-    private void saveData(ArrayList<Habit> habits) {
+    /**
+     * try to write data to storage
+     */
+    public void saveData() {
         try {
             // redundant, but i need to create the file first
             File file = new File(getFilesDir(), HABITDIR);
             FileOutputStream stream = new FileOutputStream(file);
             OutputStreamWriter outputStreamWriter
                     = new OutputStreamWriter(stream);
-            for (Habit habit : habits) {
+            for (Habit habit : data) {
                 String entry = habit.getName() + "/" +
                         habit.getStartTimeMillis() + "/" +
                         habit.getLastDoneMillis() + "/" +
@@ -136,7 +139,10 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
         }
     }
 
-    private void initData(ArrayList<Habit> habits) {
+    /**
+     * try to fetch data from storage
+     */
+    public void initData() {
         try {
             data.clear();
             File file = new File(getFilesDir(), HABITDIR);
@@ -196,7 +202,11 @@ public class MainActivity extends AppCompatActivity implements AddHabitFragment.
     public void onFragmentFinish(Habit newHabit) {
         data.add(newHabit);
         habitAdapter.notifyItemInserted(data.size() - 1);
-        saveData(data);
+        saveData();
     }
 
+    @Override
+    public void onHabitClick() {
+        saveData();
+    }
 }
