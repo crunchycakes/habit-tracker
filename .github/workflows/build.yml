@@ -34,4 +34,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: ./gradlew build sonar -Dsonar.projectKey=HabitTracker -Dsonar.host.url="$SONAR_HOST_URL" -Dsonar.login="$SONAR_TOKEN"
+        run: ./gradlew build sonar -Dsonar.projectKey=HabitTracker -Dsonar.host.url=http://401.404.mn:9000/ -Dsonar.login=sqp_487e0cbc5bc40427e0a29c177d671e8f0be151cd
